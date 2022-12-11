@@ -9,6 +9,7 @@ import { DocumentLinkProvider } from "./language/documentLink";
 import { HighlightDecoration } from "./language/decoration";
 import { FormattingProvider } from "./language/formatter";
 import { HoverProvider } from "./language/hover";
+import { CompletionItemProvider } from "./language/completionItem";
 
 import { promptToShowReleaseNotes } from "./utils";
 import * as CONSTANT from "./constants";
@@ -23,7 +24,7 @@ export function activate(context: ExtensionContext): void {
 	setConfiguration();
 
 	let smartyDecoration: HighlightDecoration;
-	
+
 	if (activeTextEditor) {
 		// Create decoration for highlight (if enabled)
 		smartyDecoration = new HighlightDecoration(activeTextEditor);
@@ -72,6 +73,8 @@ export function activate(context: ExtensionContext): void {
 	// Language document hover provider
 	languages.registerHoverProvider(CONSTANT.languageId, new HoverProvider());
 
+	languages.registerCompletionItemProvider(CONSTANT.languageId, new CompletionItemProvider());
+
 	// Command to toggle highlight decoration
 	commands.registerCommand(CONSTANT.toggleHighlightCommand, () => {
 		const getConfig = workspace.getConfiguration('smarty');
@@ -80,7 +83,7 @@ export function activate(context: ExtensionContext): void {
 
 	// Prompt to show release notes on extension updated
 	promptToShowReleaseNotes(context);
-	
+
 	// Create the language client and start the client.
 	client = createLanguageClient(context);
 	client.start();
